@@ -8,7 +8,7 @@ function AllClass({edit}) {
     const [classes,setClass] = useState([])
     useEffect(()=>{
         
-        axios.get("http://localhost:4000/classes")
+        axios.get("https://clg-project-hsns.onrender.com/classes")
         .then((res)=>{
             setClass(res.data)
             console.log(res.data)

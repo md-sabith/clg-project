@@ -16,7 +16,7 @@ function EditAtt() {
     
     useEffect(() => {
       axios
-        .get("http://localhost:4000/set-attentence")
+        .get("https://clg-project-hsns.onrender.com/set-attentence")
         .then((res) => {
           const filteredData = res.data.filter(
             (student) => student.class === Number(id)
@@ -77,7 +77,7 @@ function EditAtt() {
           
         }));
 
-        await axios.patch("http://localhost:4000/set-attentence",{updates:updatedData})
+        await axios.patch("https://clg-project-hsns.onrender.com/set-attentence",{updates:updatedData})
 
         const strength = students.length;
         const present = updatedData.filter((s) => s.status === "Present").length;
@@ -87,7 +87,7 @@ function EditAtt() {
         setSummary({ strength, present, absent, percent });
         setShowSummary(true);
 
-        await axios.patch(`http://localhost:4000/classes/by-number/${id}`, {
+        await axios.patch(`https://clg-project-hsns.onrender.com/classes/by-number/${id}`, {
           totalstudents: strength,
           presentstudents: present,
           absentstudents: absent,
@@ -115,7 +115,7 @@ function EditAtt() {
         // debug log (temporarily) — check payload in browser console
         console.log("students bulk payload:", payload2);
   
-        await axios.patch("http://localhost:4000/students/bulk-update/students",{updates:payload2})
+        await axios.patch("https://clg-project-hsns.onrender.com/students/bulk-update/students",{updates:payload2})
 
       }catch(err){
         console.log(err)

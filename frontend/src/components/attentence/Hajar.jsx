@@ -20,7 +20,7 @@ function Hajar() {
  
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/students/`)
+      .get(`https://clg-project-hsns.onrender.com/students/`)
       .then((res) => {
         const filtered = res.data
           .filter((student) => student.CLASS === Number(id))
@@ -63,7 +63,7 @@ function Hajar() {
 
     try {
       setLoad(true)
-      await axios.post("http://localhost:4000/set-attentence", payload);
+      await axios.post("https://clg-project-hsns.onrender.com/set-attentence", payload);
 
       //  calculate summary
       const strength = students.length;
@@ -76,7 +76,7 @@ function Hajar() {
       setSummary({ strength, present, absent, percent });
       setShowSummary(true);
 
-      await axios.patch(`http://localhost:4000/classes/by-number/${id}`, {
+      await axios.patch(`https://clg-project-hsns.onrender.com/classes/by-number/${id}`, {
         totalstudents: strength,
         presentstudents: present,
         absentstudents: absent,
@@ -96,7 +96,7 @@ function Hajar() {
         
       }));
 
-      await axios.patch("http://localhost:4000/students/bulk-update/students",{updates:payload2})
+      await axios.patch("https://clg-project-hsns.onrender.com/students/bulk-update/students",{updates:payload2})
       setLoad(false)
     } catch (err) {
       console.error(err);

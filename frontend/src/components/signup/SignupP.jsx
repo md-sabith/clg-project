@@ -15,7 +15,7 @@ function SignupP() {
 
     const handleSubmit=(e)=>{
         e.preventDefault()
-        axios.post('http://localhost:4000/register',{name,email,password})
+        axios.post('https://clg-project-hsns.onrender.com/register',{name,email,password})
         .then((result)=>{
             console.log(result)
             navigate('/login');
