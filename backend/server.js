@@ -9,7 +9,7 @@ const studentsRoutes = require('./routes/students')
 const attentenceRoutes = require('./routes/attentence')
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 4000;
 
 //middleware
 app.use(express.json());
