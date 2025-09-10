@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate, useParams,useLocation  } from "react-router-dom";
+import { useNavigate, useParams,useLocation, data  } from "react-router-dom";
 import { TfiLayoutGrid3,TfiLayoutGrid2  } from "react-icons/tfi";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaSadCry } from "react-icons/fa";
+import StudentsLoad from "../load-UI/StudentsLoad";
 function Hajar() {
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
@@ -12,13 +13,17 @@ function Hajar() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [load,setLoad]= useState(false)
-
+  const [dataLoad,setDataLoad] = useState(false)
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const date = queryParams.get("date") || "";
   const time = queryParams.get("time") || "Night";
+  //confirm attendance
+  const [absentees,setAbsenties] = useState([])
+  const [confirmAttendance,setConfirmAttendance] = useState(false)
  
   useEffect(() => {
+    setDataLoad(true)
     axios
       .get(`https://clg-project-hsns.onrender.com/students/`)
       .then((res) => {
@@ -34,9 +39,11 @@ function Hajar() {
 
         setStudents(filtered);
         setAttendance(initialAttendance);
+        setDataLoad(false)
       })
       .catch((err) => {
         console.error(err);
+        setDataLoad(false)
       });
   }, [id]);
 
@@ -46,10 +53,18 @@ function Hajar() {
       [ad]: isChecked ? "Present" : "Absent",
     }));
   };
-
-  const handleSubmit = async (e) => {
+  const preSumbit=(e)=>{
     e.preventDefault();
+    const absentiesList=students.filter((s)=>attendance[s.ADNO] !== "Present")
 
+    setAbsenties(absentiesList)
+    setConfirmAttendance(true)
+  }
+
+  const handleSubmit = async () => {
+
+   setConfirmAttendance(false)
+    setLoad(true)
     
     const payload = students.map((student) => ({
       nameOfStd: student["SHORT NAME"],
@@ -62,7 +77,7 @@ function Hajar() {
     }));
 
     try {
-      setLoad(true)
+      
       await axios.post("https://clg-project-hsns.onrender.com/set-attentence", payload);
 
       //  calculate summary
@@ -162,9 +177,9 @@ function Hajar() {
 
         
           <button
-            onClick={() => navigate("/edit-attentence-classes")}
+            onClick={() => navigate("/")}
             type="button"
-            className="block md:hidden ml-14 flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm transition bg-green-500 text-white"
+            className="block md:hidden ml-10 flex items-center gap-2 px-4 py-2 rounded-lg shadow-sm transition bg-green-500 text-white"
           >
             <FaHome className="text-lg" />
             Home
@@ -174,9 +189,10 @@ function Hajar() {
       </div>
 
 
+      {dataLoad &&<StudentsLoad/>}
 
-     {cards==="No"&& <div>
-      <form onSubmit={handleSubmit}>
+     {cards==="No"&& !dataLoad&& <div>
+      <form onSubmit={preSumbit}>
         <table className="table-auto border-collapse border border-gray-300 w-full">
           <thead>
             <tr>
@@ -242,9 +258,9 @@ function Hajar() {
       </div>}
 
 
-      {cards==="Cards" && 
+      {cards==="Cards" && !dataLoad && 
       <div>
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={preSumbit}>
       <main>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6 mt-2">
             {students.length > 0 ? (
@@ -258,8 +274,8 @@ function Hajar() {
                     }
                     className={`rounded-2xl p-4 text-center transition-all duration-300 transform  cursor-pointer  ${
                       isPresent
-                        ? "bg-green-200 shadow-sm hover:shadow-lg"
-                        : "bg-red-100"
+                        ? "bg-green-500 shadow-sm hover:shadow-lg"
+                        : "bg-red-500"
                     }`}
                   >
                     {/* Roll Circle */}
@@ -277,7 +293,7 @@ function Hajar() {
                     <h3 className="text-base font-semibold text-gray-800 truncate">
                       {student["SHORT NAME"]}
                     </h3>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-gray-700 mb-4">
                       Ad No: {student.ADNO}
                     </p>
 
@@ -301,6 +317,44 @@ function Hajar() {
         </footer>
         </form>
       </div>}
+      
+      {confirmAttendance &&(
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <h3 className="text-lg font-bold mb-4 text-center">
+            Confirm Submission
+          </h3>
+          <p className="mb-2">The following students are absent:</p>
+          {absentees.length > 0 ? (
+            <ul className="list-disc list-inside mb-4 text-red-600">
+              {absentees.map((s) => (
+                <li key={s.ADNO}>
+                  {s["SHORT NAME"]} (AdNo: {s.ADNO})
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-green-600 mb-4">No absentees 🎉</p>
+          )}
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={() => setConfirmAttendance(false)}
+              className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+      )
+
+      }
 
   
 

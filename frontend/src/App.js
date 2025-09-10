@@ -8,6 +8,7 @@ import ClassWIsePriv from './pages/ClassWIsePriv';
 import TestAtt from './components/attentence/TestAtt';
 import EditClassPage from './pages/EditClassPage';
 import EditAttentence from './pages/EditAttetence'
+import AllClassLoad from './components/load-UI/AllClassLoad';
 function App() {
   
   return (
@@ -19,7 +20,7 @@ function App() {
           <Route path='/login' element={<Login/>}/>
           <Route path='/attentence/:id' element={<Attentence/>}/>
           <Route path='/class-wise' element={<ClassWIsePriv/>}/>
-          <Route path='/test' element={<TestAtt/>}/>
+          <Route path='/test' element={<AllClassLoad/>}/>
           <Route path='/edit-attentence-classes' element={<EditClassPage/>}/>
           <Route path='/edit-attentence/:id' element={<EditAttentence/>}/>
         </Routes>

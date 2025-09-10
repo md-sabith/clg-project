@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import ClassWiseLoad from '../load-UI/ClassWiseLoad';
 
 
 function ClassWIse() {
     const navigate = useNavigate()
     const [classes,setClass] = useState([])
+    const [load,setLoad] = useState(false)
     useEffect(()=>{
-        
+        setLoad(true)
         axios.get("https://clg-project-hsns.onrender.com/classes")
         .then((res)=>{
             setClass(res.data)
             console.log(res.data)
+            setLoad(false)
         })
         .catch((err)=>{
             console.error(err);
+            setLoad(false)
         })
     },[])
 
@@ -23,6 +27,8 @@ function ClassWIse() {
   <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-6 tracking-tight mt-10">
      Class Wise Latest Attendance
   </h2>
+  
+    {load &&<ClassWiseLoad/>}
 
   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
     {classes.map((cls, index) => (

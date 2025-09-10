@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate, useParams } from 'react-router-dom'
 import { TfiLayoutGrid3,TfiLayoutGrid2  } from "react-icons/tfi";
 import { FaHome } from "react-icons/fa";
+import StudentsLoad from '../load-UI/StudentsLoad';
 
 function EditAtt() {
     const [students,setStudents] = useState([])
@@ -12,9 +13,12 @@ function EditAtt() {
     const [summary, setSummary] = useState({});
     const [showSummary, setShowSummary] = useState(false);
     const navigate=useNavigate()
+    const [summaryLoad,setSummaryLoad] = useState(false)
+    const [load,setLoad] = useState(false)
     const [cards,setCards] = useState('No')
     
     useEffect(() => {
+      setLoad(true)
       axios
         .get("https://clg-project-hsns.onrender.com/set-attentence")
         .then((res) => {
@@ -45,12 +49,15 @@ function EditAtt() {
               initialStatus[s.ad] = s.status;
             });
             setStatus(initialStatus);
+
           } else {
             setStudents([]);
           }
+          setLoad(false)
         })
         .catch((err) => {
           setErr(err.message);
+          setLoad(false)
         });
     }, [id]);
     
@@ -65,6 +72,7 @@ function EditAtt() {
     const handleSubmit=async(e)=>{
       e.preventDefault();
       try{
+        setSummaryLoad(true)
         const updatedData = students.map((student) => ({
           _id: student._id,
           nameOfStd: student.name, 
@@ -116,9 +124,10 @@ function EditAtt() {
         console.log("students bulk payload:", payload2);
   
         await axios.patch("https://clg-project-hsns.onrender.com/students/bulk-update/students",{updates:payload2})
-
+        setSummaryLoad(false)
       }catch(err){
         console.log(err)
+        setSummaryLoad(false)
       }
     }
     
@@ -187,7 +196,8 @@ function EditAtt() {
 
       </div>
 
-      {cards==="No" &&
+      {load &&<StudentsLoad/>}
+      {cards==="No"&&!load &&
         <div className='p-2'>
         <form onSubmit={handleSubmit}>
         <table className="table-auto border-collapse border border-gray-300 w-full">
@@ -202,7 +212,7 @@ function EditAtt() {
           <tbody>
             {students.length > 0 ? (
               students.map((student, index) => {
-                const currentStatus= status[student.ad] || student.status
+                const currentStatus= status[student.ad] !== undefined ? status[student.ad] : student.status;
                 return(
                 <tr key={index}>
                   <td className="border border-gray-300 px-4 py-2">
@@ -253,7 +263,7 @@ function EditAtt() {
       </form>
       </div>}
 
-      {cards==="Cards" &&
+      {cards==="Cards" &&!load&&
       <div>
       <form onSubmit={handleSubmit}>
         <main>
@@ -324,8 +334,15 @@ function EditAtt() {
       
       {showSummary && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          {summaryLoad &&(
+            <div className="flex flex-col items-center justify-center">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-3 text-blue-600 font-semibold">Submitting Attendance...</p>
+          </div>
+          )}
+          {!summaryLoad && 
           <div className="bg-white p-6 rounded-2xl shadow-2xl w-96 text-center">
-            <h3 className="text-xl font-bold mb-4">Updated Attendance Summary</h3>
+            <h3 className="text-xl font-bold mb-4">📊 Attendance Summary</h3>
             <p className="mb-2">👥 Strength: {summary.strength}</p>
             <p className="mb-2 text-green-600">✅ Present: {summary.present}</p>
             <p className="mb-2 text-red-600">❌ Absent: {summary.absent}</p>
@@ -338,9 +355,10 @@ function EditAtt() {
             >
               OK
             </button>
-          </div>
+          </div>}
         </div>
       )}
+
     </div>
   )
 }

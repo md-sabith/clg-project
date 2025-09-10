@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const username='Teaher Panel'
+    const username=`Teacher Panel`
     const userInitial = username ? username.charAt(0).toUpperCase() : '?';
     const navigate = useNavigate()
   return (

@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import AllClassLoad from '../load-UI/AllClassLoad';
 
 function AllClass({edit}) {
 
     const navigate = useNavigate()
     const [classes,setClass] = useState([])
+    const [load,setLoad] = useState(false)
     useEffect(()=>{
-        
+        setLoad(true)
         axios.get("https://clg-project-hsns.onrender.com/classes")
         .then((res)=>{
             setClass(res.data)
             console.log(res.data)
+            setLoad(false)
         })
         .catch((err)=>{
             console.error(err);
+            setLoad(false)
         })
     },[])
     
@@ -25,7 +29,7 @@ function AllClass({edit}) {
 
   return (
           <div className="container mx-auto px-4 py-8 mt-12">
-
+           
             {!edit &&
                 <div className="flex justify-center mb-6">
             <form className="flex items-center gap-4 bg-gray-100 p-4 rounded-lg shadow">
@@ -51,6 +55,7 @@ function AllClass({edit}) {
 
 
             <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">{edit?"Update Attendance":"Choose a class"}</h2>
+                {load && <AllClassLoad/>}
                 <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
                  {classes.map((cls, index) => (
                         <div key={index} className={` rounded-lg shadow-lg p-4 text-center cursor-pointer transition-transform transform hover:scale-105 hover:shadow-xl bg-green-100 text-green-800`}
