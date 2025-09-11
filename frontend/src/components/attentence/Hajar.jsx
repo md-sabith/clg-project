@@ -290,10 +290,10 @@ function Hajar() {
                     </div>
 
                     {/* Student Info */}
-                    <h3 className="text-base font-semibold text-gray-800 truncate">
+                    <h3 className={`text-base font-semibold text-gray-800 truncate ${isPresent?"text-gray-800":"text-white"}`}>
                       {student["SHORT NAME"]}
                     </h3>
-                    <p className="text-sm text-gray-700 mb-4">
+                    <p className={`text-sm  mb-4 ${isPresent?"text-gray-700":"text-gray-100"}`}>
                       Ad No: {student.ADNO}
                     </p>
 
