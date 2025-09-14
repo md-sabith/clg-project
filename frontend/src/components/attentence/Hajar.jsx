@@ -139,7 +139,7 @@ function Hajar() {
           {date
             ? new Date(date).toLocaleString("en-US", {
                 dateStyle: "medium",
-                timeStyle: "short",
+                
               })
             : "N/A"} ({time || "N/A"})
         </span>
