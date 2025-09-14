@@ -12,7 +12,8 @@ function ClassWIse() {
         setLoad(true)
         axios.get("https://clg-project-hsns.onrender.com/classes")
         .then((res)=>{
-            setClass(res.data)
+          const filter=res.data.sort((a, b) => a.class - b.class);
+          setClass(filter)
             console.log(res.data)
             setLoad(false)
         })
