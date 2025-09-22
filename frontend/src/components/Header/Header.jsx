@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
@@ -6,6 +6,11 @@ function Header() {
     const username=`Teacher Panel`
     const userInitial = username ? username.charAt(0).toUpperCase() : '?';
     const navigate = useNavigate()
+   function HomePage() {
+  useEffect(() => {
+    
+    window.location.href = "https://diia-attendance.onrender.com";
+  }, []);
   return (
     <>
       <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
